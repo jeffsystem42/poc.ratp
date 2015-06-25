@@ -1,0 +1,7 @@
+[
+  {
+    "nom_cache": "cacheAgent",
+    "requete": "SELECT * FROM AGENTS",
+    "bean_metier": "fr.ratp.phoebus.beanMetier.Agent"
+  }
+]

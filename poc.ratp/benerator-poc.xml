@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<setup 	xmlns="http://databene.org/benerator/0.7.0"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://databene.org/benerator/0.7.0 http://databene.org/benerator-0.7.0.xsd">
+
+	<import platforms="db" />
+	
+	
+
+	<database id="db" url="jdbc:oracle:thin:@localhost:1521:XE"
+		driver="oracle.jdbc.OracleDriver" schema="ratp" user="ratp" password="ratp" batch="true" fetchSize="1000"/>
+
+	<execute target="db" onError="warn">
+		DROP TABLE AGENTS;
+		DROP TABLE INPUT_TABLE_1;
+		DROP TABLE INPUT_TABLE_2;
+		DROP TABLE INPUT_TABLE_3;
+		DROP TABLE INPUT_TABLE_4;
+		DROP TABLE INPUT_TABLE_5;
+		DROP TABLE INPUT_TABLE_6;
+		DROP TABLE INPUT_TABLE_7;
+		DROP TABLE INPUT_TABLE_8;
+		DROP TABLE INPUT_TABLE_9;
+		DROP TABLE INPUT_TABLE_10;
+		DROP TABLE INPUT_TABLE_11;
+		DROP TABLE INPUT_TABLE_12;
+		DROP TABLE INPUT_TABLE_13;
+		DROP TABLE INPUT_TABLE_14;
+		DROP TABLE INPUT_TABLE_15;
+		DROP TABLE CONTEXT_MATRICULE_ITEM;
+		DROP TABLE MATRICULE_ERROR;
+</execute>
+
+	<execute target="db">
+	CREATE TABLE CONTEXT_MATRICULE_ITEM
+		(ID NUMBER , 
+		MATRICULE VARCHAR2(100) ,  
+		DATE_TRT DATE ,
+		PRIME1 NUMBER ,
+		PRIME2 NUMBER ,	
+		PRIME3 NUMBER 
+	   ); 
+   	CREATE TABLE MATRICULE_ERROR   
+	(	ID NUMBER NOT NULL, 
+		MATRICULE NUMBER NOT NULL,  
+		DATE_TRT DATE NOT NULL,
+		MOTIF VARCHAR2(100) NOT NULL
+	);
+	CREATE TABLE AGENTS (
+		  ID NUMBER,
+		  MATRICULE VARCHAR2(40) NOT NULL,
+		  NOM VARCHAR2(40) NOT NULL,
+		  PRENOM VARCHAR2(40) NOT NULL
+		);
+		CREATE TABLE INPUT_TABLE_1 (
+		ID NUMBER,
+		MATRICULE NUMBER,
+		DATE_TRT DATE
+		);
+		CREATE TABLE INPUT_TABLE_2 (
+		ID NUMBER,
+		MATRICULE NUMBER,
+		DATE_TRT DATE
+		);
+		CREATE TABLE INPUT_TABLE_3 (
+		ID NUMBER,
+		MATRICULE NUMBER,
+		DATE_TRT DATE
+		);
+		CREATE TABLE INPUT_TABLE_4 (
+		ID NUMBER,
+		MATRICULE NUMBER,
+		DATE_TRT DATE
+		);
+		CREATE TABLE INPUT_TABLE_5 (
+		ID NUMBER,
+		MATRICULE NUMBER,
+		DATE_TRT DATE
+		);
+		
+		CREATE TABLE INPUT_TABLE_6(
+		ID NUMBER,
+		MATRICULE NUMBER,
+		DATE_TRT DATE
+		);
+		CREATE TABLE INPUT_TABLE_7 (
+		ID NUMBER,
+		MATRICULE NUMBER,
+		DATE_TRT DATE
+		);
+		CREATE TABLE INPUT_TABLE_8 (
+		ID NUMBER,
+		MATRICULE NUMBER,
+		DATE_TRT DATE
+		);
+		CREATE TABLE INPUT_TABLE_9 (
+		ID NUMBER,
+		MATRICULE NUMBER,
+		DATE_TRT DATE
+		);
+		CREATE TABLE INPUT_TABLE_10 (
+		ID NUMBER,
+		MATRICULE NUMBER,
+		DATE_TRT DATE
+		);
+		
+		CREATE TABLE INPUT_TABLE_11 (
+		ID NUMBER,
+		MATRICULE NUMBER,
+		DATE_TRT DATE
+		);
+		CREATE TABLE INPUT_TABLE_12 (
+		ID NUMBER,
+		MATRICULE NUMBER,
+		DATE_TRT DATE
+		);
+		CREATE TABLE INPUT_TABLE_13 (
+		ID NUMBER,
+		MATRICULE NUMBER,
+		DATE_TRT DATE
+		);
+		CREATE TABLE INPUT_TABLE_14 (
+		ID NUMBER,
+		MATRICULE NUMBER,
+		DATE_TRT DATE
+		);
+		CREATE TABLE INPUT_TABLE_15 (
+		ID NUMBER,
+		MATRICULE NUMBER,
+		DATE_TRT DATE
+		);
+		
+</execute>
+
+
+
+
+	<generate type="AGENTS" count="15000" consumer="db" pageSize="1000">
+		<id name="id" type="long"
+			generator="org.databene.benerator.primitive.IncrementalIdGenerator" />
+		<id name="matricule" type="long"
+			generator="org.databene.benerator.primitive.IncrementalIdGenerator" />
+		<attribute name="nom"
+			generator="org.databene.domain.person.FamilyNameGenerator" />
+		<attribute name="prenom" />
+	</generate>
+
+	<generate type="INPUT_TABLE_1" count="999" consumer="db" pageSize="1000">
+		<id name="id" type="long" generator="new IncrementalIdGenerator(1)" />
+		<id name="matricule" type="long" generator="new IncrementalIdGenerator(1)" />
+		<attribute name="date_trt" />
+	</generate>
+
+	<generate type="INPUT_TABLE_2" count="1000" consumer="db" pageSize="1000">
+		<id name="id" type="long" generator="new IncrementalIdGenerator(1000)" />
+		<id name="matricule" type="long" generator="new IncrementalIdGenerator(1000)" />
+		<attribute name="date_trt" />
+	</generate>
+
+	<generate type="INPUT_TABLE_3" count="1000" consumer="db" pageSize="1000">
+		<id name="id" type="long" generator="new IncrementalIdGenerator(2000)" />
+		<id name="matricule" type="long" generator="new IncrementalIdGenerator(2000)" />
+		<attribute name="date_trt" />
+	</generate>
+
+	<generate type="INPUT_TABLE_4" count="1000" consumer="db" pageSize="1000">
+		<id name="id" type="long" generator="new IncrementalIdGenerator(3000)" />
+		<id name="matricule" type="long" generator="new IncrementalIdGenerator(3000)" />
+		<attribute name="date_trt" />
+	</generate>
+
+	<generate type="INPUT_TABLE_5" count="1000" consumer="db" pageSize="1000">
+		<id name="id" type="long" generator="new IncrementalIdGenerator(4000)" />
+		<id name="matricule" type="long" generator="new IncrementalIdGenerator(4000)" />
+		<attribute name="date_trt" />
+		<attribute name="date_trt" />
+	</generate>
+
+	<generate type="INPUT_TABLE_6" count="1000" consumer="db" pageSize="1000">
+		<id name="id" type="long" generator="new IncrementalIdGenerator(5000)" />
+		<id name="matricule" type="long" generator="new IncrementalIdGenerator(5000)" />
+		<attribute name="date_trt" />
+	</generate>
+
+	<generate type="INPUT_TABLE_7" count="1000" consumer="db" pageSize="1000">
+		<id name="id" type="long" generator="new IncrementalIdGenerator(6000)" />
+		<id name="matricule" type="long" generator="new IncrementalIdGenerator(6000)" />
+		<attribute name="date_trt" />
+	</generate>
+
+	<generate type="INPUT_TABLE_8" count="1000" consumer="db" pageSize="1000">
+		<id name="id" type="long" generator="new IncrementalIdGenerator(7000)" />
+		<id name="matricule" type="long" generator="new IncrementalIdGenerator(7000)" />
+		<attribute name="date_trt" />
+	</generate>
+
+	<generate type="INPUT_TABLE_9" count="1000" consumer="db" pageSize="1000">
+		<id name="id" type="long" generator="new IncrementalIdGenerator(8000)" />
+		<id name="matricule" type="long" generator="new IncrementalIdGenerator(8000)" />
+		<attribute name="date_trt" />
+	</generate>
+
+	<generate type="INPUT_TABLE_10" count="1000" consumer="db" pageSize="1000">
+		<id name="id" type="long" generator="new IncrementalIdGenerator(9000)" />
+		<id name="matricule" type="long" generator="new IncrementalIdGenerator(9000)" />
+		<attribute name="date_trt" />
+	</generate>
+
+	<generate type="INPUT_TABLE_11" count="1000" consumer="db" pageSize="1000">
+		<id name="id" type="long" generator="new IncrementalIdGenerator(10000)" />
+		<id name="matricule" type="long" generator="new IncrementalIdGenerator(10000)" />
+		<attribute name="date_trt" />
+	</generate>
+
+	<generate type="INPUT_TABLE_12" count="1000" consumer="db" pageSize="1000">
+		<id name="id" type="long" generator="new IncrementalIdGenerator(11000)" />
+		<id name="matricule" type="long" generator="new IncrementalIdGenerator(11000)" />
+		<attribute name="date_trt" />
+	</generate>
+
+	<generate type="INPUT_TABLE_13" count="1000" consumer="db" pageSize="1000">
+		<id name="id" type="long" generator="new IncrementalIdGenerator(12000)" />
+		<id name="matricule" type="long" generator="new IncrementalIdGenerator(12000)" />
+		<attribute name="date_trt" />
+	</generate>
+
+	<generate type="INPUT_TABLE_14" count="1000" consumer="db" pageSize="1000">
+		<id name="id" type="long" generator="new IncrementalIdGenerator(13000)" />
+		<id name="matricule" type="long" generator="new IncrementalIdGenerator(13000)" />
+		<attribute name="date_trt" />
+	</generate>
+
+	<generate type="INPUT_TABLE_15" count="1000" consumer="db" pageSize="1000">
+		<id name="id" type="long" generator="new IncrementalIdGenerator(14000)" />
+		<id name="matricule" type="long" generator="new IncrementalIdGenerator(14000)" />
+		<attribute name="date_trt" />
+	</generate>
+
+
+
+</setup>

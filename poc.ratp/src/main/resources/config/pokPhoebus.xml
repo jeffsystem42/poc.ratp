@@ -1,0 +1,148 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/batch
+		http://www.springframework.org/schema/batch/spring-batch-3.0.xsd
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+	">
+
+	<!-- Objet transitant d'UT en UT -->
+	<bean id="primes" class="fr.ratp.phoebus.beanMetier.ContextMatriculeItem"
+		scope="prototype" />
+
+	<!-- DAO table AGENTS -->
+	<bean id="agentsDao" class="fr.ratp.phoebus.dao.AgentsDao" scope="prototype">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<!-- DAO du cache -->
+	<bean id="cacheDao" class="fr.ratp.phoebus.dao.CacheDaoImpl"
+		scope="prototype">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<!-- DAO table MATRICULE_ERROR -->
+	<bean id="matriculeErrorDao" class="fr.ratp.phoebus.dao.MatriculeErrorDaoImpl"
+		scope="prototype">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<!-- Tasklet de chargement du cache -->
+	<bean id="loadCacheTasklet" class="fr.ratp.phoebus.tasklet.LoadCache"
+		scope="prototype">
+		<property name="cacheDao" ref="cacheDao" />
+		<property name="cacheManager" ref="cacheManager" />
+		<property name="threadPoolSize" value="${cache.pool.size}" />
+	</bean>
+
+	<!-- Partitioner job -->
+	<job id="primeCalculatorJob" xmlns="http://www.springframework.org/schema/batch">
+
+		<!-- Mise en cache des référentiels -->
+		<step id="cacheStep" next="masterStep">
+			<tasklet ref="loadCacheTasklet" />
+		</step>
+
+		<!-- Master step : N threads (grid-size) -->
+		<step id="masterStep">
+
+			<partition step="slave" partitioner="primePartitioner">
+				<handler grid-size="${partitionner.grid.size}"
+					task-executor="taskExecutor" />
+			</partition>
+		</step>
+
+	</job>
+
+	<!-- Chaque thread exécute ce job avec des valeurs différentes de stepExecutionContext -->
+	<step id="slave" xmlns="http://www.springframework.org/schema/batch">
+
+		<tasklet>
+			<chunk reader="primeItemReader" writer="jdbcCompositeWriter"
+				processor="itemProcessor" commit-interval="1000" skip-limit="1000">
+				<skippable-exception-classes>
+					<include class="fr.ratp.phoebus.exception.PhoebusException" />
+				</skippable-exception-classes>
+			</chunk>
+			<listeners>
+				<listener ref="skipCalculatorListener" />
+			</listeners>
+		</tasklet>
+	</step>
+
+	<!-- Listener skip calculator -->
+	<bean id="skipCalculatorListener" class="fr.ratp.phoebus.listener.SkipCalculatorListener">
+		<property name="matriculeErrorDao" ref="matriculeErrorDao" />
+	</bean>
+
+	<!-- Partitioner -->
+	<bean id="primePartitioner" class="fr.ratp.phoebus.partitioner.PrimePartitioner">
+		<property name="tableNamePrefix" value="${partitionner.table.name.prefix}" />
+	</bean>
+
+	<!-- Task Executor -->
+	<bean id="taskExecutor" class="org.springframework.core.task.SimpleAsyncTaskExecutor" />
+
+	<!-- Composite Item Processor -->
+	<bean id="itemProcessor"
+		class="fr.ratp.phoebus.compositeItemProcessor.PrimeCompositeProcessor"
+		scope="step">
+		<property name="threadName" value="#{stepExecutionContext[name]}" />
+	</bean>
+
+	<!-- Reader -->
+	<bean id="primeItemReader"
+		class="org.springframework.batch.item.database.JdbcCursorItemReader"
+		scope="step">
+		<property name="dataSource" ref="dataSource" />
+		<property name="sql"
+			value="select * from #{stepExecutionContext[tableName]}" />
+		<property name="rowMapper">
+			<bean class="org.springframework.jdbc.core.BeanPropertyRowMapper">
+				<constructor-arg value="fr.ratp.phoebus.beanMetier.ContextMatriculeItem" />
+			</bean>
+		</property>
+	</bean>
+
+	<!-- Composite Item Writer : utiliser afin de pouvoir rendre paramétrable 
+		le writer qui sera instancié -->
+	<bean id="jdbcCompositeWriter"
+		class="org.springframework.batch.item.support.CompositeItemWriter"
+		scope="step">
+		<property name="delegates">
+			<list>
+				<ref bean="#{jobParameters['writer']}" />
+			</list>
+		</property>
+	</bean>
+
+	<!-- writer -->
+	<bean id="contextMatriculeWriter" class="fr.ratp.phoebus.writer.ContextMatriculeWriter"
+		scope="step">
+		<property name="dataSource" ref="dataSource" />
+		<property name="tableName" value="#{stepExecutionContext[tableName]}" />
+	</bean>
+
+	<!-- Writer : NON UTILISE, GARDER POUR l'EXEMPLE -->
+	<bean id="cvsFileItemWriter" class="org.springframework.batch.item.file.FlatFileItemWriter"
+		scope="step">
+
+		<property name="resource"
+			value="file:cvs/report#{stepExecutionContext[tableName]}.csv" />
+		<property name="shouldDeleteIfExists" value="true" />
+
+		<property name="lineAggregator">
+			<bean
+				class="org.springframework.batch.item.file.transform.DelimitedLineAggregator">
+				<property name="delimiter" value="," />
+				<property name="fieldExtractor">
+					<bean
+						class="org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor">
+						<property name="names" value="matricule, prime1, prime2, prime3" />
+					</bean>
+				</property>
+			</bean>
+		</property>
+	</bean>
+
+</beans>

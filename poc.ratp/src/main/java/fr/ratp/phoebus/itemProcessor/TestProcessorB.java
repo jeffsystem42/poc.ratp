@@ -46,7 +46,7 @@ public class TestProcessorB implements ItemProcessor<ContextMatriculeItem, Conte
 
 		// divise la prime2 par 2
 		item.setPrime2(item.getPrime2() / 2);
-		item.setPrime3(item.getPrime3() + 2);
+		item.setPrime3(item.getPrime3() + 1);
 
 		return item;
 	}

@@ -13,6 +13,7 @@ public class ContextMatriculeItem {
     private int prime1;
     private int prime2;
     private int prime3;
+    private PrimeT primeT;
     
     public BigDecimal getCompteurA() {
 		return compteurA;
@@ -72,6 +73,14 @@ public class ContextMatriculeItem {
     public void setPrime3(int prime3) {
         this.prime3 = prime3;
     }
+
+	public PrimeT getPrimeT() {
+		return primeT;
+	}
+
+	public void setPrimeT(PrimeT primeT) {
+		this.primeT = primeT;
+	}
 
 
 }
